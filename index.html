@@ -24,7 +24,7 @@
 
     <div class="body_main">
       <div id="info">
-        <h3>Building 3</h3>
+        <h3>Engineering, Building 3</h3>
         <div class="banner">
           <h2>floor 1</h2>
         </div>
@@ -45,18 +45,22 @@
 
       <div class="add_room">
         <h3>Want to track more room? Add info here!</h3>
-        <label for="floor">Floor: </label>
-        <select id="floor" onChange="update()">
+        <label for="input_floor">Floor: </label>
+        <select id="input_floor">
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
           <option value="4">4</option>
         </select>
         <br /><br />
-        <label for="name">Room number:</label>
-        <input type="text" id="name" name="name" /><br /><br />
-        <label for="capacity">Room capacity:</label>
-        <input type="text" id="capacity" name="capacity" /><br /><br />
+        <label for="input_name">Room number:</label>
+        <input type="text" id="input_name" name="input_name" /><br /><br />
+        <label for="input_capacity">Room capacity:</label>
+        <input
+          type="number"
+          id="input_capacity"
+          name="input_capacity"
+        /><br /><br />
         <input id="add_button" class="button" type="submit" value="Add" />
       </div>
     </div>

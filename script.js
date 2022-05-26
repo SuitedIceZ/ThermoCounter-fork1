@@ -37,16 +37,29 @@ async function init(){
             h3.innerHTML = room_amount + '/' + room_capacity;
             div.appendChild(h2);
             div.appendChild(h3);
-            
             console.log(room_name);
             floor.appendChild(div);
         }
     }
-    
 }
 init();
 
 add_button.onclick = function(){
-    console.log("reloadddddddddddddddddddddd");
+    var select = document.getElementById('input_floor');
+    var value = select.options[select.selectedIndex].value;
+    var input_name = document.getElementById('input_name').value;
+    var input_capacity = document.getElementById('input_capacity').value;
+    console.log(input_name + ' ' + input_capacity);
+    db.collection(value.toString()).add({
+        amount: 0,
+        room: input_name,
+        capacity: input_capacity
+    })
+    .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+    })
+    .catch((error) => {
+        console.error("Error adding document: ", error);
+    });
     window.location.reload();
 }

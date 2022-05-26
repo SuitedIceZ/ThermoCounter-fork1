@@ -3701,6 +3701,9 @@ int main(void)
   int k = 14;
   int size = 65536; //65536
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+
+  //I2C3 ESP8266 communicate
+  char mode = '0';
   while (1)
   {
     /* USER CODE END WHILE */
@@ -3734,10 +3737,20 @@ int main(void)
 	 		TIM2->CCR1 = __USER_DATA[(int)(i/k)];
 	 	  }
 
+	 	  //Send data to ESP8266
+
+		  HAL_I2C_Slave_Transmit(&hi2c3, &mode, sizeof(mode), 1000);
+		  mode = (mode == '0' ? '1' : '0');
+
+
 	  }
 	  else if(IR_value == 1 && OneShot == 1){
 		  OneShot = 0;
 	  }
+	  //I2C to ESP8266 test
+	  /*HAL_I2C_Slave_Transmit(&hi2c3, &mode, sizeof(mode), 1000);
+	  mode = (mode == '0' ? '1' : '0');*/
+
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	  HAL_Delay(1000);
   }
@@ -3840,7 +3853,7 @@ static void MX_I2C3_Init(void)
   hi2c3.Instance = I2C3;
   hi2c3.Init.ClockSpeed = 100000;
   hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c3.Init.OwnAddress1 = 0;
+  hi2c3.Init.OwnAddress1 = 18;
   hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c3.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
   hi2c3.Init.OwnAddress2 = 0;

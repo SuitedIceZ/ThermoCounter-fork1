@@ -45,7 +45,7 @@ I2C_HandleTypeDef hi2c3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+char usb_tx_buff[128] = {};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,7 +95,41 @@ int main(void)
   MX_I2C1_Init();
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
+  int temp_obj1, temp_obj2, temp_amb;
 
+  HAL_Delay(10000);
+
+  sprintf(usb_tx_buff, "Starting reading in 3 sec..\r\n");
+  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
+  HAL_Delay(3000);
+
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_TOMIN, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_TOMAX, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_PWMCTRL, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_TARANGE, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_EMISSIVITY, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_CFG1, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_SA, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID1, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID2, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID3, MLX90614_DBG_ON);
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID4, MLX90614_DBG_ON);
+
+  sprintf(usb_tx_buff, "Writing regs: \r\n");
+  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
+
+  MLX90614_WriteReg(MLX90614_DEFAULT_SA, MLX90614_CFG1, 0xB7C0);
+
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_CFG1, MLX90614_DBG_ON);
+
+  MLX90614_WriteReg(MLX90614_DEFAULT_SA, MLX90614_PWMCTRL, 0x1405);
+
+  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_PWMCTRL, MLX90614_DBG_ON);
+
+  sprintf(usb_tx_buff, "Starting loop in 500 msec..\r\n");
+  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
+
+  HAL_Delay(500);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -109,6 +143,14 @@ int main(void)
 	  int IR_value = HAL_GPIO_ReadPin(IR1_GPIO_Port, IR1_Pin);
 	  sprintf(buffer,"Infrared value = %d\n\r",IR_value);
 	  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
+
+	  temp_obj1 = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TOBJ1);
+	  HAL_Delay(5);
+	  temp_amb = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TAMB);
+
+	  sprintf(usb_tx_buff, "T obj1: %d, T amb: %d\r\n", temp_obj1, temp_amb);
+	  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
+
 	  if(IR_value == 0){ //found object
 		  sprintf(buffer,"Found object\n\r");
 		  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);

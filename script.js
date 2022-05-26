@@ -17,25 +17,36 @@
 
 var add_button = document.getElementById("add_button");
 
-async function init(){ //add_button.onclick = function(){
-    let info = document.getElementById("info");
-    //body_main.innerHTML = '';
-    var room_list = await db.collection('1').get();
-    for(const doc of room_list.docs){
+async function init(){ 
+    let floors = ["floor1","floor2","floor3","floor4"];
+    for(var i=0;i<4;i++){
+        var room_list = await db.collection((i+1).toString()).get();
+        let floor = document.getElementById(floors[i]);
+        console.log(i+1 + ' ' + room_list.lenght);
+        for(const doc of room_list.docs){
             var room_name = doc.data().room;
             var room_capacity = doc.data().capacity;
             var room_amount = doc.data().amount;
             let h2 = document.createElement("h2");
             h2.innerHTML = room_name;
             let h3 = document.createElement("h3");
-            h3.className ="avilable";
-            h3.innerHTML = room_amount + '/' + room_capacity;
+            if(room_capacity > room_amount) h3.className ="avilable";
+            else h3.className ="full";
             let div = document.createElement("div");
             div.className = "card";
+            h3.innerHTML = room_amount + '/' + room_capacity;
             div.appendChild(h2);
             div.appendChild(h3);
-            console.log( "room name " +  room_name);
-            info.appendChild(div);
+            
+            console.log(room_name);
+            floor.appendChild(div);
         }
+    }
+    
 }
 init();
+
+add_button.onclick = function(){
+    console.log("reloadddddddddddddddddddddd");
+    window.location.reload();
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>ThermoCounter</title>
+  </head>
+
+  <body>
+    <div class="header">
+      <img src="images/Icon.png" />
+      <h2>Thermo Counter</h2>
+    </div>
+
+    <div class="body_main">
+      <div class="info">
+        <div class="banner">
+          <h2>floor 1</h2>
+        </div>
+        <div class="banner">
+          <h2>floor 2</h2>
+        </div>
+        <div class="second_floor">
+          <div class="card">
+            <h2>2301</h2>
+            <h3 class="avilable">18/30</h3>
+          </div>
+          <div class="card">
+            <h2>2303</h2>
+            <h3 class="avilable">12/40</h3>
+          </div>
+          <div class="card">
+            <h2>2304</h2>
+            <h3 class="avilable">22/30</h3>
+          </div>
+          <div class="card">
+            <h2>2305</h2>
+            <h3 class="full">30/30</h3>
+          </div>
+        </div>
+        <div class="banner">
+          <h2>floor 3</h2>
+        </div>
+        <div class="banner">
+          <h2>floor 4</h2>
+        </div>
+      </div>
+
+      <div class="add_room">
+        <h3>Want to track more room? Add info here!</h3>
+        <label for="floor">Floor: </label>
+        <select id="floor" onChange="update()">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+        <br /><br />
+        <label for="name">Room number:</label>
+        <input type="text" id="name" name="name" /><br /><br />
+        <label for="capacity">Room capacity:</label>
+        <input type="text" id="capacity" name="capacity" /><br /><br />
+        <input class="button" type="submit" value="Add" />
+      </div>
+    </div>
+  </body>
+</html>

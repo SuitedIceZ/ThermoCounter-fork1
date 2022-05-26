@@ -144,18 +144,20 @@ int main(void)
 	  sprintf(buffer,"Infrared value = %d\n\r",IR_value);
 	  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
 
-	  temp_obj1 = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TOBJ1);
-	  HAL_Delay(5);
-	  temp_amb = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TAMB);
 
-	  sprintf(usb_tx_buff, "T obj1: %d, T amb: %d\r\n", temp_obj1, temp_amb);
-	  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
 
 	  if(IR_value == 0){ //found object
 		  sprintf(buffer,"Found object\n\r");
 		  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
 
-
+		  HAL_Delay(5);
+		  temp_obj1 = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TOBJ1);
+		  HAL_Delay(5);
+		  temp_obj2 = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TOBJ2);;
+		  HAL_Delay(5);
+		  temp_amb = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TAMB);;
+		  sprintf(usb_tx_buff, "T obj1: %d, T obj2: %d, T amb: %d\r\n", temp_obj1, temp_obj2, temp_amb);
+		  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
 	  }
 
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);

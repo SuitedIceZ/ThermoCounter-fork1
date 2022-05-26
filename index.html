@@ -6,10 +6,13 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
+    <script type="module" src="script.js"></script>
     <title>ThermoCounter</title>
   </head>
 
@@ -20,14 +23,16 @@
     </div>
 
     <div class="body_main">
-      <div class="info">
+      <div id="info">
+        <h3>Building 3</h3>
         <div class="banner">
           <h2>floor 1</h2>
         </div>
+        <div class="first-floor"></div>
         <div class="banner">
           <h2>floor 2</h2>
         </div>
-        <div class="second_floor">
+        <div class="second-floor">
           <div class="card">
             <h2>2301</h2>
             <h3 class="avilable">18/30</h3>
@@ -48,9 +53,11 @@
         <div class="banner">
           <h2>floor 3</h2>
         </div>
+        <div class="third-floor"></div>
         <div class="banner">
           <h2>floor 4</h2>
         </div>
+        <div class="forth-floor"></div>
       </div>
 
       <div class="add_room">

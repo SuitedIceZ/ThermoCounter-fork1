@@ -1,16 +1,18 @@
 #include <Wire.h>
-#include <ESP8266WiFi.h> //การประกาศเรียกใช้ Library ESP8266
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClient.h>
 
 //Wifi variable
 const char* ssid = "oppo f11 pro";
  //การประกาศสร้างตัวแปรเก็บ Username เครื่อข่าย WiFi ชื่อว่า ssid 
-const char* pass = "fainrada";
+const char* password = "fainrada";
  //การประกาศสร้างตัวแปรเก็บ Password ของเครื่อข่าย WiFi ชื่อว่า pass
 
 //GET POST Request variable
 //Your Domain name with URL path or IP address with path
-String serverName = "http://192.168.1.106:1880/update-sensor";
-
+String serverName = "https://disastrousripedemo.cdgstudent.repl.co/";
+String host = "disastrousripedemo.cdgstudent.repl.co";
 // the following variables are unsigned longs because the time, measured in
 // milliseconds, will quickly become a bigger number than can be stored in an int.
 unsigned long lastTime = 0;
@@ -59,11 +61,20 @@ void loop() {
     }
   Serial.print(c);
 
-  if(WiFi.status()== WL_CONNECTED){
-      WiFiClient client;
-      HTTPClient http;
 
-      String serverPath = serverName + "?temperature=24.37";
+  if(WiFi.status()== WL_CONNECTED){
+      WiFiClientSecure client;
+        HTTPClient http;
+
+        const int httpPort = 443; // 80 is for HTTP / 443 is for HTTPS!
+          client.setInsecure(); // this is the magical line that makes everything work
+          if (!client.connect(host, httpPort)) { //works!
+            Serial.println("connection failed");
+            return;
+          }
+    
+      String serverPath = serverName;// + "?temperature=24.37";
+      Serial.println("GET from server");
       
   // Your Domain name with URL path or IP address with path
       http.begin(client, serverPath.c_str());

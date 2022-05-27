@@ -56,23 +56,33 @@ void loop() {
   //Receive data from STM32
  Wire.requestFrom(STM32_address, 1); /* request & read data of size 13 from slave */
  while(Wire.available()){
+    // c command : 1 ask is full , 2 add , 3 minus
     char c = Wire.read();
     if(c == '1'){ //Turn on
       digitalWrite(LED_BUILTIN, LOW);
     }
-    else if(c == '0'){ //Turn off
+    else{ //Turn off
       digitalWrite(LED_BUILTIN, HIGH);
     }
   Serial.println("Received data from STM32 : " + (String)c);
-  String GET_output = GET_isFull(ROOM_NUMBER);
-  if(GET_output == "Not full"){
+  String GET_output = GET_request("isfull",ROOM_NUMBER);
+  if(GET_output == "false"){
     Serial.println("Room " + String(ROOM_NUMBER) + " is not full");
+    
+    //Adding people
+    if(GET_request("add",ROOM_NUMBER) == "true"){
+      Serial.println("Room " + String(ROOM_NUMBER) + " adding complete!");
+    }
+    else{
+      Serial.println("Room " + String(ROOM_NUMBER) + " adding fail.");
+    }
+    
   }
-  else if(GET_output == "Full"){
+  else if(GET_output == "true"){
     Serial.println("Room " + String(ROOM_NUMBER) + " is full");
   }
   else{
-    Serial.println("GET Request with room " + String(ROOM_NUMBER) + " error : " + GET_output);
+    Serial.println("GET Request [isfull] with room " + String(ROOM_NUMBER) + " error : " + GET_output);
   }
 
  }
@@ -80,7 +90,8 @@ void loop() {
  delay(1000);
 }
 
-String GET_isFull(int room_number){
+
+String GET_request(String request,int room_number){
   if(WiFi.status()== WL_CONNECTED){
       WiFiClientSecure client;
         HTTPClient http;
@@ -92,7 +103,7 @@ String GET_isFull(int room_number){
             return "Connection failed" ;
           }
     
-      String serverPath = serverName + "isfull" + "?room=" + String(room_number);
+      String serverPath = serverName + request + "?room=" + String(room_number);
       Serial.println("GET from server");
       
   // Your Domain name with URL path or IP address with path
@@ -107,15 +118,7 @@ String GET_isFull(int room_number){
         Serial.println(httpResponseCode);
         String payload = http.getString();
         Serial.println("payload : " + payload);
-        if(payload == "false"){
-          output = "Not full";
-        }
-        else if(payload == "true"){
-          output = "Full";
-        }
-        else{
-          output = "Payload error";
-        }
+        output = payload;
       }
       else {
         Serial.print("Error code: ");

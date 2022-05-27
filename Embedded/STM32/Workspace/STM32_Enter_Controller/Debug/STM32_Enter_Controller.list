@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00030070  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00010ede  00000000  00000000  000300a0  2**0
+ 12 .debug_info   00010eee  00000000  00000000  000300a0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00001f40  00000000  00000000  00040f7e  2**0
+ 13 .debug_abbrev 00001f40  00000000  00000000  00040f8e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000e80  00000000  00000000  00042ec0  2**3
+ 14 .debug_aranges 00000e80  00000000  00000000  00042ed0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000df0  00000000  00000000  00043d40  2**3
+ 15 .debug_ranges 00000df0  00000000  00000000  00043d50  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  0001703a  00000000  00000000  00044b30  2**0
+ 16 .debug_macro  0001703a  00000000  00000000  00044b40  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   000111db  00000000  00000000  0005bb6a  2**0
+ 17 .debug_line   000111e3  00000000  00000000  0005bb7a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000903a9  00000000  00000000  0006cd45  2**0
+ 18 .debug_str    000903a9  00000000  00000000  0006cd5d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000053  00000000  00000000  000fd0ee  2**0
+ 19 .comment      00000053  00000000  00000000  000fd106  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00004308  00000000  00000000  000fd144  2**2
+ 20 .debug_frame  00004308  00000000  00000000  000fd15c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1476,40 +1476,43 @@ int main(void)
   int size = 65536; //65536
  8000f54:	f44f 3380 	mov.w	r3, #65536	; 0x10000
  8000f58:	f8c7 3400 	str.w	r3, [r7, #1024]	; 0x400
+  int amp = 0;
+ 8000f5c:	2300      	movs	r3, #0
+ 8000f5e:	f8c7 33fc 	str.w	r3, [r7, #1020]	; 0x3fc
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
- 8000f5c:	2100      	movs	r1, #0
- 8000f5e:	486a      	ldr	r0, [pc, #424]	; (8001108 <main+0x2f0>)
- 8000f60:	f002 fdfc 	bl	8003b5c <HAL_TIM_PWM_Start>
+ 8000f62:	2100      	movs	r1, #0
+ 8000f64:	4868      	ldr	r0, [pc, #416]	; (8001108 <main+0x2f0>)
+ 8000f66:	f002 fdf9 	bl	8003b5c <HAL_TIM_PWM_Start>
 
   //I2C3 ESP8266 communicate
   char mode = '0';
- 8000f64:	1dfb      	adds	r3, r7, #7
- 8000f66:	2230      	movs	r2, #48	; 0x30
- 8000f68:	701a      	strb	r2, [r3, #0]
+ 8000f6a:	1cfb      	adds	r3, r7, #3
+ 8000f6c:	2230      	movs	r2, #48	; 0x30
+ 8000f6e:	701a      	strb	r2, [r3, #0]
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
 	  int IR_value = HAL_GPIO_ReadPin(IR1_GPIO_Port, IR1_Pin);
- 8000f6a:	2108      	movs	r1, #8
- 8000f6c:	4867      	ldr	r0, [pc, #412]	; (800110c <main+0x2f4>)
- 8000f6e:	f000 ffc7 	bl	8001f00 <HAL_GPIO_ReadPin>
- 8000f72:	4603      	mov	r3, r0
- 8000f74:	f8c7 33fc 	str.w	r3, [r7, #1020]	; 0x3fc
+ 8000f70:	2108      	movs	r1, #8
+ 8000f72:	4866      	ldr	r0, [pc, #408]	; (800110c <main+0x2f4>)
+ 8000f74:	f000 ffc4 	bl	8001f00 <HAL_GPIO_ReadPin>
+ 8000f78:	4603      	mov	r3, r0
+ 8000f7a:	f8c7 33f8 	str.w	r3, [r7, #1016]	; 0x3f8
 	  sprintf(buffer,"Infrared value = %d\n\r",IR_value);
- 8000f78:	f107 0308 	add.w	r3, r7, #8
- 8000f7c:	f8d7 23fc 	ldr.w	r2, [r7, #1020]	; 0x3fc
- 8000f80:	4963      	ldr	r1, [pc, #396]	; (8001110 <main+0x2f8>)
- 8000f82:	4618      	mov	r0, r3
- 8000f84:	f003 fea6 	bl	8004cd4 <siprintf>
+ 8000f7e:	1d3b      	adds	r3, r7, #4
+ 8000f80:	f8d7 23f8 	ldr.w	r2, [r7, #1016]	; 0x3f8
+ 8000f84:	4962      	ldr	r1, [pc, #392]	; (8001110 <main+0x2f8>)
+ 8000f86:	4618      	mov	r0, r3
+ 8000f88:	f003 fea4 	bl	8004cd4 <siprintf>
 	  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
- 8000f88:	f107 0308 	add.w	r3, r7, #8
- 8000f8c:	4618      	mov	r0, r3
- 8000f8e:	f7ff f927 	bl	80001e0 <strlen>
- 8000f92:	4603      	mov	r3, r0
- 8000f94:	b29a      	uxth	r2, r3
- 8000f96:	f107 0108 	add.w	r1, r7, #8
+ 8000f8c:	1d3b      	adds	r3, r7, #4
+ 8000f8e:	4618      	mov	r0, r3
+ 8000f90:	f7ff f926 	bl	80001e0 <strlen>
+ 8000f94:	4603      	mov	r3, r0
+ 8000f96:	b29a      	uxth	r2, r3
+ 8000f98:	1d39      	adds	r1, r7, #4
  8000f9a:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
  8000f9e:	4857      	ldr	r0, [pc, #348]	; (80010fc <main+0x2e4>)
  8000fa0:	f003 fb9d 	bl	80046de <HAL_UART_Transmit>
@@ -1517,156 +1520,158 @@ int main(void)
 
 
 	  if(IR_value == 0 && OneShot == 0){ //found object
- 8000fa4:	f8d7 33fc 	ldr.w	r3, [r7, #1020]	; 0x3fc
+ 8000fa4:	f8d7 33f8 	ldr.w	r3, [r7, #1016]	; 0x3f8
  8000fa8:	2b00      	cmp	r3, #0
- 8000faa:	f040 808e 	bne.w	80010ca <main+0x2b2>
+ 8000faa:	f040 808f 	bne.w	80010cc <main+0x2b4>
  8000fae:	f8d7 340c 	ldr.w	r3, [r7, #1036]	; 0x40c
  8000fb2:	2b00      	cmp	r3, #0
- 8000fb4:	f040 8089 	bne.w	80010ca <main+0x2b2>
+ 8000fb4:	f040 808a 	bne.w	80010cc <main+0x2b4>
 		  OneShot = 1;
  8000fb8:	2301      	movs	r3, #1
  8000fba:	f8c7 340c 	str.w	r3, [r7, #1036]	; 0x40c
 		  sprintf(buffer,"Found object\n\r");
- 8000fbe:	f107 0308 	add.w	r3, r7, #8
- 8000fc2:	4954      	ldr	r1, [pc, #336]	; (8001114 <main+0x2fc>)
- 8000fc4:	4618      	mov	r0, r3
- 8000fc6:	f003 fe85 	bl	8004cd4 <siprintf>
+ 8000fbe:	1d3b      	adds	r3, r7, #4
+ 8000fc0:	4954      	ldr	r1, [pc, #336]	; (8001114 <main+0x2fc>)
+ 8000fc2:	4618      	mov	r0, r3
+ 8000fc4:	f003 fe86 	bl	8004cd4 <siprintf>
 		  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
- 8000fca:	f107 0308 	add.w	r3, r7, #8
- 8000fce:	4618      	mov	r0, r3
- 8000fd0:	f7ff f906 	bl	80001e0 <strlen>
- 8000fd4:	4603      	mov	r3, r0
- 8000fd6:	b29a      	uxth	r2, r3
- 8000fd8:	f107 0108 	add.w	r1, r7, #8
- 8000fdc:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
- 8000fe0:	4846      	ldr	r0, [pc, #280]	; (80010fc <main+0x2e4>)
- 8000fe2:	f003 fb7c 	bl	80046de <HAL_UART_Transmit>
+ 8000fc8:	1d3b      	adds	r3, r7, #4
+ 8000fca:	4618      	mov	r0, r3
+ 8000fcc:	f7ff f908 	bl	80001e0 <strlen>
+ 8000fd0:	4603      	mov	r3, r0
+ 8000fd2:	b29a      	uxth	r2, r3
+ 8000fd4:	1d39      	adds	r1, r7, #4
+ 8000fd6:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
+ 8000fda:	4848      	ldr	r0, [pc, #288]	; (80010fc <main+0x2e4>)
+ 8000fdc:	f003 fb7f 	bl	80046de <HAL_UART_Transmit>
 
 		  //Temperature Sensor
 		  HAL_Delay(5);
- 8000fe6:	2005      	movs	r0, #5
- 8000fe8:	f000 fcfc 	bl	80019e4 <HAL_Delay>
+ 8000fe0:	2005      	movs	r0, #5
+ 8000fe2:	f000 fcff 	bl	80019e4 <HAL_Delay>
 		  temp_obj1 = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TOBJ1);
- 8000fec:	2107      	movs	r1, #7
- 8000fee:	205a      	movs	r0, #90	; 0x5a
- 8000ff0:	f7ff fed6 	bl	8000da0 <MLX90614_ReadTemp>
- 8000ff4:	eef0 7a40 	vmov.f32	s15, s0
- 8000ff8:	eefd 7ae7 	vcvt.s32.f32	s15, s15
- 8000ffc:	ee17 3a90 	vmov	r3, s15
- 8001000:	f8c7 33f8 	str.w	r3, [r7, #1016]	; 0x3f8
+ 8000fe6:	2107      	movs	r1, #7
+ 8000fe8:	205a      	movs	r0, #90	; 0x5a
+ 8000fea:	f7ff fed9 	bl	8000da0 <MLX90614_ReadTemp>
+ 8000fee:	eef0 7a40 	vmov.f32	s15, s0
+ 8000ff2:	eefd 7ae7 	vcvt.s32.f32	s15, s15
+ 8000ff6:	ee17 3a90 	vmov	r3, s15
+ 8000ffa:	f8c7 33f4 	str.w	r3, [r7, #1012]	; 0x3f4
 		  HAL_Delay(5);
- 8001004:	2005      	movs	r0, #5
- 8001006:	f000 fced 	bl	80019e4 <HAL_Delay>
+ 8000ffe:	2005      	movs	r0, #5
+ 8001000:	f000 fcf0 	bl	80019e4 <HAL_Delay>
 		  temp_obj2 = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TOBJ2);;
- 800100a:	2108      	movs	r1, #8
- 800100c:	205a      	movs	r0, #90	; 0x5a
- 800100e:	f7ff fec7 	bl	8000da0 <MLX90614_ReadTemp>
- 8001012:	eef0 7a40 	vmov.f32	s15, s0
- 8001016:	eefd 7ae7 	vcvt.s32.f32	s15, s15
- 800101a:	ee17 3a90 	vmov	r3, s15
- 800101e:	f8c7 33f4 	str.w	r3, [r7, #1012]	; 0x3f4
+ 8001004:	2108      	movs	r1, #8
+ 8001006:	205a      	movs	r0, #90	; 0x5a
+ 8001008:	f7ff feca 	bl	8000da0 <MLX90614_ReadTemp>
+ 800100c:	eef0 7a40 	vmov.f32	s15, s0
+ 8001010:	eefd 7ae7 	vcvt.s32.f32	s15, s15
+ 8001014:	ee17 3a90 	vmov	r3, s15
+ 8001018:	f8c7 33f0 	str.w	r3, [r7, #1008]	; 0x3f0
 		  HAL_Delay(5);
- 8001022:	2005      	movs	r0, #5
- 8001024:	f000 fcde 	bl	80019e4 <HAL_Delay>
+ 800101c:	2005      	movs	r0, #5
+ 800101e:	f000 fce1 	bl	80019e4 <HAL_Delay>
 		  temp_amb = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TAMB);;
- 8001028:	2106      	movs	r1, #6
- 800102a:	205a      	movs	r0, #90	; 0x5a
- 800102c:	f7ff feb8 	bl	8000da0 <MLX90614_ReadTemp>
- 8001030:	eef0 7a40 	vmov.f32	s15, s0
- 8001034:	eefd 7ae7 	vcvt.s32.f32	s15, s15
- 8001038:	ee17 3a90 	vmov	r3, s15
- 800103c:	f8c7 33f0 	str.w	r3, [r7, #1008]	; 0x3f0
+ 8001022:	2106      	movs	r1, #6
+ 8001024:	205a      	movs	r0, #90	; 0x5a
+ 8001026:	f7ff febb 	bl	8000da0 <MLX90614_ReadTemp>
+ 800102a:	eef0 7a40 	vmov.f32	s15, s0
+ 800102e:	eefd 7ae7 	vcvt.s32.f32	s15, s15
+ 8001032:	ee17 3a90 	vmov	r3, s15
+ 8001036:	f8c7 33ec 	str.w	r3, [r7, #1004]	; 0x3ec
 		  sprintf(usb_tx_buff, "T obj1: %d, T obj2: %d, T amb: %d\r\n", temp_obj1, temp_obj2, temp_amb);
+ 800103a:	f8d7 33ec 	ldr.w	r3, [r7, #1004]	; 0x3ec
+ 800103e:	9300      	str	r3, [sp, #0]
  8001040:	f8d7 33f0 	ldr.w	r3, [r7, #1008]	; 0x3f0
- 8001044:	9300      	str	r3, [sp, #0]
- 8001046:	f8d7 33f4 	ldr.w	r3, [r7, #1012]	; 0x3f4
- 800104a:	f8d7 23f8 	ldr.w	r2, [r7, #1016]	; 0x3f8
- 800104e:	4932      	ldr	r1, [pc, #200]	; (8001118 <main+0x300>)
- 8001050:	4829      	ldr	r0, [pc, #164]	; (80010f8 <main+0x2e0>)
- 8001052:	f003 fe3f 	bl	8004cd4 <siprintf>
+ 8001044:	f8d7 23f4 	ldr.w	r2, [r7, #1012]	; 0x3f4
+ 8001048:	4933      	ldr	r1, [pc, #204]	; (8001118 <main+0x300>)
+ 800104a:	482b      	ldr	r0, [pc, #172]	; (80010f8 <main+0x2e0>)
+ 800104c:	f003 fe42 	bl	8004cd4 <siprintf>
 		  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
- 8001056:	4828      	ldr	r0, [pc, #160]	; (80010f8 <main+0x2e0>)
- 8001058:	f7ff f8c2 	bl	80001e0 <strlen>
- 800105c:	4603      	mov	r3, r0
- 800105e:	b29a      	uxth	r2, r3
- 8001060:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
- 8001064:	4924      	ldr	r1, [pc, #144]	; (80010f8 <main+0x2e0>)
- 8001066:	4825      	ldr	r0, [pc, #148]	; (80010fc <main+0x2e4>)
- 8001068:	f003 fb39 	bl	80046de <HAL_UART_Transmit>
+ 8001050:	4829      	ldr	r0, [pc, #164]	; (80010f8 <main+0x2e0>)
+ 8001052:	f7ff f8c5 	bl	80001e0 <strlen>
+ 8001056:	4603      	mov	r3, r0
+ 8001058:	b29a      	uxth	r2, r3
+ 800105a:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
+ 800105e:	4926      	ldr	r1, [pc, #152]	; (80010f8 <main+0x2e0>)
+ 8001060:	4826      	ldr	r0, [pc, #152]	; (80010fc <main+0x2e4>)
+ 8001062:	f003 fb3c 	bl	80046de <HAL_UART_Transmit>
 
 
 		  //Speaker play sound
 	 	  for(int i = 0 ; i < (int)(size*k) ; i++ ){ //sizeof(__USER_DATA)/sizeof(uint8_t)
- 800106c:	2300      	movs	r3, #0
- 800106e:	f8c7 3408 	str.w	r3, [r7, #1032]	; 0x408
- 8001072:	e00f      	b.n	8001094 <main+0x27c>
-	 		TIM2->CCR1 = __USER_DATA[(int)(i/k)];
- 8001074:	f8d7 2408 	ldr.w	r2, [r7, #1032]	; 0x408
- 8001078:	f8d7 3404 	ldr.w	r3, [r7, #1028]	; 0x404
- 800107c:	fb92 f3f3 	sdiv	r3, r2, r3
- 8001080:	4a26      	ldr	r2, [pc, #152]	; (800111c <main+0x304>)
- 8001082:	5cd2      	ldrb	r2, [r2, r3]
- 8001084:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
- 8001088:	635a      	str	r2, [r3, #52]	; 0x34
+ 8001066:	2300      	movs	r3, #0
+ 8001068:	f8c7 3408 	str.w	r3, [r7, #1032]	; 0x408
+ 800106c:	e013      	b.n	8001096 <main+0x27e>
+	 		TIM2->CCR1 = (__USER_DATA[(int)(i/k)] + amp);
+ 800106e:	f8d7 2408 	ldr.w	r2, [r7, #1032]	; 0x408
+ 8001072:	f8d7 3404 	ldr.w	r3, [r7, #1028]	; 0x404
+ 8001076:	fb92 f3f3 	sdiv	r3, r2, r3
+ 800107a:	4a28      	ldr	r2, [pc, #160]	; (800111c <main+0x304>)
+ 800107c:	5cd3      	ldrb	r3, [r2, r3]
+ 800107e:	461a      	mov	r2, r3
+ 8001080:	f8d7 33fc 	ldr.w	r3, [r7, #1020]	; 0x3fc
+ 8001084:	441a      	add	r2, r3
+ 8001086:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
+ 800108a:	635a      	str	r2, [r3, #52]	; 0x34
 	 	  for(int i = 0 ; i < (int)(size*k) ; i++ ){ //sizeof(__USER_DATA)/sizeof(uint8_t)
- 800108a:	f8d7 3408 	ldr.w	r3, [r7, #1032]	; 0x408
- 800108e:	3301      	adds	r3, #1
- 8001090:	f8c7 3408 	str.w	r3, [r7, #1032]	; 0x408
- 8001094:	f8d7 3400 	ldr.w	r3, [r7, #1024]	; 0x400
- 8001098:	f8d7 2404 	ldr.w	r2, [r7, #1028]	; 0x404
- 800109c:	fb02 f303 	mul.w	r3, r2, r3
- 80010a0:	f8d7 2408 	ldr.w	r2, [r7, #1032]	; 0x408
- 80010a4:	429a      	cmp	r2, r3
- 80010a6:	dbe5      	blt.n	8001074 <main+0x25c>
+ 800108c:	f8d7 3408 	ldr.w	r3, [r7, #1032]	; 0x408
+ 8001090:	3301      	adds	r3, #1
+ 8001092:	f8c7 3408 	str.w	r3, [r7, #1032]	; 0x408
+ 8001096:	f8d7 3400 	ldr.w	r3, [r7, #1024]	; 0x400
+ 800109a:	f8d7 2404 	ldr.w	r2, [r7, #1028]	; 0x404
+ 800109e:	fb02 f303 	mul.w	r3, r2, r3
+ 80010a2:	f8d7 2408 	ldr.w	r2, [r7, #1032]	; 0x408
+ 80010a6:	429a      	cmp	r2, r3
+ 80010a8:	dbe1      	blt.n	800106e <main+0x256>
 	 	  }
 
 	 	  //Send data to ESP8266
 
 		  HAL_I2C_Slave_Transmit(&hi2c3, &mode, sizeof(mode), 1000);
- 80010a8:	1df9      	adds	r1, r7, #7
- 80010aa:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
- 80010ae:	2201      	movs	r2, #1
- 80010b0:	481b      	ldr	r0, [pc, #108]	; (8001120 <main+0x308>)
- 80010b2:	f001 f9b3 	bl	800241c <HAL_I2C_Slave_Transmit>
+ 80010aa:	1cf9      	adds	r1, r7, #3
+ 80010ac:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
+ 80010b0:	2201      	movs	r2, #1
+ 80010b2:	481b      	ldr	r0, [pc, #108]	; (8001120 <main+0x308>)
+ 80010b4:	f001 f9b2 	bl	800241c <HAL_I2C_Slave_Transmit>
 		  mode = (mode == '0' ? '1' : '0');
- 80010b6:	1dfb      	adds	r3, r7, #7
- 80010b8:	781b      	ldrb	r3, [r3, #0]
- 80010ba:	2b30      	cmp	r3, #48	; 0x30
- 80010bc:	d101      	bne.n	80010c2 <main+0x2aa>
- 80010be:	2231      	movs	r2, #49	; 0x31
- 80010c0:	e000      	b.n	80010c4 <main+0x2ac>
- 80010c2:	2230      	movs	r2, #48	; 0x30
- 80010c4:	1dfb      	adds	r3, r7, #7
- 80010c6:	701a      	strb	r2, [r3, #0]
- 80010c8:	e00a      	b.n	80010e0 <main+0x2c8>
+ 80010b8:	1cfb      	adds	r3, r7, #3
+ 80010ba:	781b      	ldrb	r3, [r3, #0]
+ 80010bc:	2b30      	cmp	r3, #48	; 0x30
+ 80010be:	d101      	bne.n	80010c4 <main+0x2ac>
+ 80010c0:	2231      	movs	r2, #49	; 0x31
+ 80010c2:	e000      	b.n	80010c6 <main+0x2ae>
+ 80010c4:	2230      	movs	r2, #48	; 0x30
+ 80010c6:	1cfb      	adds	r3, r7, #3
+ 80010c8:	701a      	strb	r2, [r3, #0]
+ 80010ca:	e00a      	b.n	80010e2 <main+0x2ca>
 
 
 	  }
 	  else if(IR_value == 1 && OneShot == 1){
- 80010ca:	f8d7 33fc 	ldr.w	r3, [r7, #1020]	; 0x3fc
- 80010ce:	2b01      	cmp	r3, #1
- 80010d0:	d106      	bne.n	80010e0 <main+0x2c8>
- 80010d2:	f8d7 340c 	ldr.w	r3, [r7, #1036]	; 0x40c
- 80010d6:	2b01      	cmp	r3, #1
- 80010d8:	d102      	bne.n	80010e0 <main+0x2c8>
+ 80010cc:	f8d7 33f8 	ldr.w	r3, [r7, #1016]	; 0x3f8
+ 80010d0:	2b01      	cmp	r3, #1
+ 80010d2:	d106      	bne.n	80010e2 <main+0x2ca>
+ 80010d4:	f8d7 340c 	ldr.w	r3, [r7, #1036]	; 0x40c
+ 80010d8:	2b01      	cmp	r3, #1
+ 80010da:	d102      	bne.n	80010e2 <main+0x2ca>
 		  OneShot = 0;
- 80010da:	2300      	movs	r3, #0
- 80010dc:	f8c7 340c 	str.w	r3, [r7, #1036]	; 0x40c
+ 80010dc:	2300      	movs	r3, #0
+ 80010de:	f8c7 340c 	str.w	r3, [r7, #1036]	; 0x40c
 	  }
 	  //I2C to ESP8266 test
 	  /*HAL_I2C_Slave_Transmit(&hi2c3, &mode, sizeof(mode), 1000);
 	  mode = (mode == '0' ? '1' : '0');*/
 
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
- 80010e0:	2120      	movs	r1, #32
- 80010e2:	4810      	ldr	r0, [pc, #64]	; (8001124 <main+0x30c>)
- 80010e4:	f000 ff3d 	bl	8001f62 <HAL_GPIO_TogglePin>
+ 80010e2:	2120      	movs	r1, #32
+ 80010e4:	480f      	ldr	r0, [pc, #60]	; (8001124 <main+0x30c>)
+ 80010e6:	f000 ff3c 	bl	8001f62 <HAL_GPIO_TogglePin>
 	  HAL_Delay(1000);
- 80010e8:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
- 80010ec:	f000 fc7a 	bl	80019e4 <HAL_Delay>
+ 80010ea:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
+ 80010ee:	f000 fc79 	bl	80019e4 <HAL_Delay>
   {
- 80010f0:	e73b      	b.n	8000f6a <main+0x152>
- 80010f2:	bf00      	nop
+ 80010f2:	e73d      	b.n	8000f70 <main+0x158>
  80010f4:	08005548 	.word	0x08005548
  80010f8:	2000008c 	.word	0x2000008c
  80010fc:	20000208 	.word	0x20000208

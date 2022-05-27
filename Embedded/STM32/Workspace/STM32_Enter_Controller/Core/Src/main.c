@@ -3700,6 +3700,7 @@ int main(void)
   //Sound const.
   int k = 14;
   int size = 65536; //65536
+  int amp = 0;
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 
   //I2C3 ESP8266 communicate
@@ -3734,7 +3735,7 @@ int main(void)
 
 		  //Speaker play sound
 	 	  for(int i = 0 ; i < (int)(size*k) ; i++ ){ //sizeof(__USER_DATA)/sizeof(uint8_t)
-	 		TIM2->CCR1 = __USER_DATA[(int)(i/k)];
+	 		TIM2->CCR1 = (__USER_DATA[(int)(i/k)] + amp);
 	 	  }
 
 	 	  //Send data to ESP8266

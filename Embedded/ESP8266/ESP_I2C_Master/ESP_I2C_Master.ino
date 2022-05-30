@@ -11,9 +11,9 @@ const char* password = "098765432";
 //GET Request variable
 int const ROOM_NUMBER = 402;
 //Your Domain name with URL path or IP address with path
-String serverName = "https://DisastrousRipeDemo.suitedicez.repl.co/";
+String serverName = "https://ThermoCounterBackend.suitedicez.repl.co";
 //Your Domain name without starting \https:// and ending /
-String host = "DisastrousRipeDemo.suitedicez.repl.co";
+String host = "ThermoCounterBackend.suitedicez.repl.co";
 
 
 //I2C variable
@@ -103,7 +103,7 @@ String GET_request(String request,int room_number){
             return "Connection failed" ;
           }
     
-      String serverPath = serverName + request + "?room=" + String(room_number);
+      String serverPath = serverName + "/" + request + "?room=" + String(room_number);
       Serial.println("GET from server");
       
   // Your Domain name with URL path or IP address with path

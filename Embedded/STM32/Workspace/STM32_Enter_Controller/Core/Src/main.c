@@ -42,12 +42,12 @@
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c3;
 
-TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-char usb_tx_buff[128] = {};
+char buffer[1000] = {};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,7 +56,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_I2C3_Init(void);
-static void MX_TIM3_Init(void);
+static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -3626,6 +3626,56 @@ const uint8_t __USER_DATA[65536] = {
   * @brief  The application entry point.
   * @retval int
   */
+
+void Speaker_Beep(int n){
+	//Sound constant
+	int k = 14;
+	int size = 65536; //65536
+	int amp = 0;
+	for(int beep = 0 ; beep < n ; beep ++){
+		for(int i = 0 ; i < (int)(size*k) ; i++ ){ //sizeof(__USER_DATA)/sizeof(uint8_t)
+			TIM4->CCR2 = (__USER_DATA[(int)(i/k)] + amp);
+		}
+		HAL_Delay(100);
+	}
+}
+
+void MLX90614_Configuration(){
+	HAL_Delay(10000);
+
+	  sprintf(buffer, "Starting reading in 3 sec..\r\n");
+	  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
+	  HAL_Delay(3000);
+
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_TOMIN, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_TOMAX, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_PWMCTRL, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_TARANGE, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_EMISSIVITY, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_CFG1, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_SA, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID1, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID2, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID3, MLX90614_DBG_ON);
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID4, MLX90614_DBG_ON);
+
+	  sprintf(buffer, "Writing regs: \r\n");
+	  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
+
+	  MLX90614_WriteReg(MLX90614_DEFAULT_SA, MLX90614_CFG1, 0xB7C0);
+
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_CFG1, MLX90614_DBG_ON);
+
+	  MLX90614_WriteReg(MLX90614_DEFAULT_SA, MLX90614_PWMCTRL, 0x1405);
+
+	  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_PWMCTRL, MLX90614_DBG_ON);
+
+	  sprintf(buffer, "Starting loop in 500 msec..\r\n");
+	  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
+
+	  HAL_Delay(500);
+}
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -3653,69 +3703,40 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   MX_I2C3_Init();
-  MX_TIM3_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
+
+  sprintf(buffer, "Starting USER configuration\r\n");
+  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
+
+  //Thermometer configuration
   int temp_obj1, temp_obj2, temp_amb;
+  MLX90614_Configuration();
+  int const FEVER_LEVEL = 60;
 
-  HAL_Delay(10000);
+  //Input configuration
+  int OneShot = 0;
 
-  sprintf(usb_tx_buff, "Starting reading in 3 sec..\r\n");
-  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
-  HAL_Delay(3000);
+  //I2C3 ESP8266 communicate
+  char mode = '1';
+  int const REQUEST_DELAY = 5000;
 
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_TOMIN, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_TOMAX, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_PWMCTRL, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_TARANGE, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_EMISSIVITY, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_CFG1, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_SA, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID1, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID2, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID3, MLX90614_DBG_ON);
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_ID4, MLX90614_DBG_ON);
+  //Sound PWM start.
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 
-  sprintf(usb_tx_buff, "Writing regs: \r\n");
-  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
-
-  MLX90614_WriteReg(MLX90614_DEFAULT_SA, MLX90614_CFG1, 0xB7C0);
-
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_CFG1, MLX90614_DBG_ON);
-
-  MLX90614_WriteReg(MLX90614_DEFAULT_SA, MLX90614_PWMCTRL, 0x1405);
-
-  MLX90614_ReadReg(MLX90614_DEFAULT_SA, MLX90614_PWMCTRL, MLX90614_DBG_ON);
-
-  sprintf(usb_tx_buff, "Starting loop in 500 msec..\r\n");
-  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
-
-  HAL_Delay(500);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  char buffer[1000];
-  int OneShot = 0;
-
-  //Sound const.
-  int k = 14;
-  int size = 65536; //65536
-  int amp = 0;
-  //HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  //I2C3 ESP8266 communicate
-  char mode = '0';
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
+	  //Reading infrared motion sensor to start
 	  int IR_value = HAL_GPIO_ReadPin(IR1_GPIO_Port, IR1_Pin);
 	  sprintf(buffer,"Infrared value = %d\n\r",IR_value);
 	  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
-
-
 
 	  if(IR_value == 0 && OneShot == 0){ //found object
 		  OneShot = 1;
@@ -3729,30 +3750,45 @@ int main(void)
 		  temp_obj2 = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TOBJ2);;
 		  HAL_Delay(5);
 		  temp_amb = MLX90614_ReadTemp(MLX90614_DEFAULT_SA, MLX90614_TAMB);;
-		  sprintf(usb_tx_buff, "T obj1: %d, T obj2: %d, T amb: %d\r\n", temp_obj1, temp_obj2, temp_amb);
-		  HAL_UART_Transmit(&huart2, &usb_tx_buff, strlen(usb_tx_buff), 1000);
+		  sprintf(buffer, "T obj1: %d, T obj2: %d, T amb: %d\r\n", temp_obj1, temp_obj2, temp_amb);
+		  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
 
+		  //Over Heat
+		  if(temp_obj1 >= FEVER_LEVEL){
+			  sprintf(buffer, "OverHeat!!! %d >= %d, beep beep beep.\r\n", temp_obj1, FEVER_LEVEL);
+			  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
+			  Speaker_Beep(5);
+			  continue;
+		  }
+		  Speaker_Beep(1);
 
-		  //Speaker play sound
-	 	  for(int i = 0 ; i < (int)(size*k) ; i++ ){ //sizeof(__USER_DATA)/sizeof(uint8_t)
-	 		//TIM2->CCR1 = (__USER_DATA[(int)(i/k)] + amp);
-	 		TIM3->CCR1 = (__USER_DATA[(int)(i/k)] + amp);
-	 	  }
+	 	  //Send data to ESP8266 ask isFull , and adding
+		  HAL_I2C_Slave_Transmit(&hi2c3,&mode,sizeof(mode), 2000);
+		  HAL_Delay(REQUEST_DELAY);
 
-	 	  //Send data to ESP8266
+		  char Feedback[2] = "9"; // 3 is not full adding complete , 4 is full adding fail. , 9 default
+		  //Wait for feedback
+		  HAL_I2C_Slave_Receive(&hi2c3, &Feedback, sizeof(Feedback), 20000);
+			  if(Feedback[0] == '3'){
+				  sprintf(buffer,"Adding complete! beep.\n\r");
+				  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
 
-		  HAL_I2C_Slave_Transmit(&hi2c3, &mode, sizeof(mode), 1000);
-		  mode = (mode == '0' ? '1' : '0');
+				  Speaker_Beep(1);
+			  }
+			  else if(Feedback[0] == '4'){
+				  sprintf(buffer,"Adding fail beep beep beep.\n\r");
+				  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
 
-
-	  }
+				  Speaker_Beep(3);
+			  }
+			  else{
+				  sprintf(buffer,"Feedback error : %s\n\r",Feedback);
+				  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
+			  }
+		  }
 	  else if(IR_value == 1 && OneShot == 1){
 		  OneShot = 0;
 	  }
-	  //I2C to ESP8266 test
-	  /*HAL_I2C_Slave_Transmit(&hi2c3, &mode, sizeof(mode), 1000);
-	  mode = (mode == '0' ? '1' : '0');*/
-
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	  HAL_Delay(1000);
   }
@@ -3872,46 +3908,46 @@ static void MX_I2C3_Init(void)
 }
 
 /**
-  * @brief TIM3 Initialization Function
+  * @brief TIM4 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_TIM3_Init(void)
+static void MX_TIM4_Init(void)
 {
 
-  /* USER CODE BEGIN TIM3_Init 0 */
+  /* USER CODE BEGIN TIM4_Init 0 */
 
-  /* USER CODE END TIM3_Init 0 */
+  /* USER CODE END TIM4_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
   TIM_OC_InitTypeDef sConfigOC = {0};
 
-  /* USER CODE BEGIN TIM3_Init 1 */
+  /* USER CODE BEGIN TIM4_Init 1 */
 
-  /* USER CODE END TIM3_Init 1 */
-  htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
-  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 1023;
-  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
-  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  /* USER CODE END TIM4_Init 1 */
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 0;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 1023;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
   {
     Error_Handler();
   }
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
+  if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)
   {
     Error_Handler();
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
@@ -3919,14 +3955,14 @@ static void MX_TIM3_Init(void)
   sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM3_Init 2 */
+  /* USER CODE BEGIN TIM4_Init 2 */
 
-  /* USER CODE END TIM3_Init 2 */
-  HAL_TIM_MspPostInit(&htim3);
+  /* USER CODE END TIM4_Init 2 */
+  HAL_TIM_MspPostInit(&htim4);
 
 }
 
@@ -3993,6 +4029,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC6 */
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : IR1_Pin */
   GPIO_InitStruct.Pin = IR1_Pin;

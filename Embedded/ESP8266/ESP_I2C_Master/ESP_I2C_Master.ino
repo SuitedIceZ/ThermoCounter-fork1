@@ -19,6 +19,8 @@ String host = "ThermoCounterBackend.suitedicez.repl.co";
 //I2C variable
 int STM32_address = 9;
 
+//Debug
+int LD = 0;
 
 void setup() {
  
@@ -49,41 +51,52 @@ void setup() {
 }
 
 void loop() {
-// Wire.beginTransmission(STM32_address); /* begin with device address STM32_address */
-// Wire.write("Hello Arduino");  /* sends hello string */
-// Wire.endTransmission();    /* stop transmitting */
-
-  //Receive data from STM32
- Wire.requestFrom(STM32_address, 1); /* request & read data of size 13 from slave */
+ //LD ON indicate ready for scaning
+  digitalWrite(LED_BUILTIN, LOW);
+  
+ //Receive data from STM32
+ Wire.requestFrom(STM32_address, 1); /* request & read data of size 1 from slave */
  while(Wire.available()){
-    // c command : 1 ask is full , 2 add , 3 minus
+    //LD OFF indicate not ready for scaning
+    digitalWrite(LED_BUILTIN, HIGH);
+    
+    // c command : 1 ask is full then add if possible , 2 minus.
     char c = Wire.read();
-    if(c == '1'){ //Turn on
-      digitalWrite(LED_BUILTIN, LOW);
-    }
-    else{ //Turn off
-      digitalWrite(LED_BUILTIN, HIGH);
-    }
-  Serial.println("Received data from STM32 : " + (String)c);
-  String GET_output = GET_request("isfull",ROOM_NUMBER);
-  if(GET_output == "false"){
-    Serial.println("Room " + String(ROOM_NUMBER) + " is not full");
+
+    //Toggle LD for debugging
     
-    //Adding people
-    if(GET_request("add",ROOM_NUMBER) == "true"){
-      Serial.println("Room " + String(ROOM_NUMBER) + " adding complete!");
-    }
-    else{
-      Serial.println("Room " + String(ROOM_NUMBER) + " adding fail.");
-    }
+    LD = (LD+1)%2;
     
-  }
-  else if(GET_output == "true"){
-    Serial.println("Room " + String(ROOM_NUMBER) + " is full");
-  }
-  else{
-    Serial.println("GET Request [isfull] with room " + String(ROOM_NUMBER) + " error : " + GET_output);
-  }
+    Serial.println("Received data from STM32 : " + (String)c);
+    if(c == '1'){ //ask is full then add if possible
+      String GET_output = GET_request("isfull",ROOM_NUMBER);
+      if(GET_output == "false"){
+        Serial.println("Room " + String(ROOM_NUMBER) + " is not full");
+
+
+        //Adding people
+
+        if(GET_request("add",ROOM_NUMBER) == "true"){
+          Serial.println("Room " + String(ROOM_NUMBER) + " adding complete!");
+          Wire.beginTransmission(STM32_address); /* begin with device address STM32_address */
+          Wire.write("3");
+          Wire.endTransmission();
+        }
+        else{
+          Serial.println("Room " + String(ROOM_NUMBER) + " adding fail.");
+        }
+      }
+      else if(GET_output == "true"){
+        Wire.beginTransmission(STM32_address); /* begin with device address STM32_address */
+        Wire.write("4");
+        Wire.endTransmission();
+        Serial.println("Room " + String(ROOM_NUMBER) + " is full");
+      }
+      else{
+        Serial.println("GET Request [isfull] with room " + String(ROOM_NUMBER) + " error : " + GET_output);
+      }
+      
+    }
 
  }
  Serial.println();

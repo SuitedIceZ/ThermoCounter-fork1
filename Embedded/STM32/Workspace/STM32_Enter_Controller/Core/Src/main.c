@@ -3620,12 +3620,6 @@ const uint8_t __USER_DATA[65536] = {
 		  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 		  0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
 
 void Speaker_Beep(int n){
 	//Sound constant
@@ -3675,6 +3669,15 @@ void MLX90614_Configuration(){
 
 	  HAL_Delay(500);
 }
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+
+
 
 int main(void)
 {

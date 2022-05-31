@@ -62,35 +62,21 @@ void loop() {
     
     // c command : 1 ask is full then add if possible , 2 minus.
     char c = Wire.read();
-
-    //Toggle LD for debugging
-    
-    LD = (LD+1)%2;
     
     Serial.println("Received data from STM32 : " + (String)c);
     if(c == '1'){ //ask is full then add if possible
-      String GET_output = GET_request("isfull",ROOM_NUMBER);
-      if(GET_output == "false"){
-        Serial.println("Room " + String(ROOM_NUMBER) + " is not full");
-
-
-        //Adding people
-
-        if(GET_request("add",ROOM_NUMBER) == "true"){
-          Serial.println("Room " + String(ROOM_NUMBER) + " adding complete!");
-          Wire.beginTransmission(STM32_address); /* begin with device address STM32_address */
-          Wire.write("3");
-          Wire.endTransmission();
-        }
-        else{
-          Serial.println("Room " + String(ROOM_NUMBER) + " adding fail.");
-        }
+      String GET_output = GET_request("add",ROOM_NUMBER);
+      if(GET_output == "true"){
+        Serial.println("Room " + String(ROOM_NUMBER) + " is not full adding complete");
+        Wire.beginTransmission(STM32_address); /* begin with device address STM32_address */
+        Wire.write("3");
+        Wire.endTransmission();
       }
-      else if(GET_output == "true"){
+      else if(GET_output == "false"){ //room is full adding fail
         Wire.beginTransmission(STM32_address); /* begin with device address STM32_address */
         Wire.write("4");
         Wire.endTransmission();
-        Serial.println("Room " + String(ROOM_NUMBER) + " is full");
+        Serial.println("Room " + String(ROOM_NUMBER) + " is full adding fail");
       }
       else{
         Serial.println("GET Request [isfull] with room " + String(ROOM_NUMBER) + " error : " + GET_output);

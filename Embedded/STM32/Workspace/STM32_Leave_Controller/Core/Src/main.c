@@ -3671,6 +3671,7 @@ int main(void)
 
   //Input configuration
   int OneShot = 0;
+  int const Interval_Delay = 250;
 
   //I2C3 ESP8266 communicate
   char mode = '2';
@@ -3728,7 +3729,7 @@ int main(void)
 	  		  OneShot = 0;
 	  	  }
 	  	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-	  	  HAL_Delay(1000);
+	  	  HAL_Delay(Interval_Delay);
   }
   /* USER CODE END 3 */
 }

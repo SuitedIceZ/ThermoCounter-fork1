@@ -3635,8 +3635,6 @@ void Speaker_Beep(int n){
 }
 
 void MLX90614_Configuration(){
-	HAL_Delay(10000);
-
 	  sprintf(buffer, "Starting reading in 3 sec..\r\n");
 	  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
 	  HAL_Delay(3000);
@@ -3676,9 +3674,6 @@ void MLX90614_Configuration(){
   * @brief  The application entry point.
   * @retval int
   */
-
-
-
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -3719,7 +3714,7 @@ int main(void)
 
   //Input configuration
   int OneShot = 0;
-
+  int const Interval_Delay = 250;
   //I2C3 ESP8266 communicate
   char mode = '1';
   int const REQUEST_DELAY = 5000;
@@ -3771,7 +3766,7 @@ int main(void)
 
 		  char Feedback[2] = "9"; // 3 is not full adding complete , 4 is full adding fail. , 9 default
 		  //Wait for feedback
-		  HAL_I2C_Slave_Receive(&hi2c3, &Feedback, sizeof(Feedback), 20000);
+		  HAL_I2C_Slave_Receive(&hi2c3, &Feedback, sizeof(Feedback), 10000);
 			  if(Feedback[0] == '3'){
 				  sprintf(buffer,"Adding complete! beep.\n\r");
 				  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
@@ -3793,7 +3788,7 @@ int main(void)
 		  OneShot = 0;
 	  }
 	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-	  HAL_Delay(1000);
+	  HAL_Delay(Interval_Delay);
   }
   /* USER CODE END 3 */
 }
@@ -4032,14 +4027,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PC6 */
-  GPIO_InitStruct.Pin = GPIO_PIN_6;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : IR1_Pin */
   GPIO_InitStruct.Pin = IR1_Pin;

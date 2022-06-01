@@ -90,6 +90,28 @@ add_button.onclick = async function(){
     window.location.reload();
 }
 
+var delete_button = document.getElementById("delete_button");
+
+//delete room feature
+delete_button.onclick = async function(){
+    let input_delete_name = document.getElementById('input_delete_name').value;
+    console.log("want to delete: " + input_delete_name);
+    
+    for(let i=1;i<=4;i++){
+        let room_list = await db.collection(i.toString()).get();
+        for(const doc of room_list.docs){
+            if(doc.data().room == input_delete_name){
+                await db.collection(i.toString()).doc(doc.id).delete().then(() => {
+                    console.log("Document successfully deleted!");
+                }).catch((error) => {
+                    console.error("Error removing document: ", error);
+                });
+            }
+        }
+    }
+    window.location.reload();
+}
+
 
 //realtime data listener & updater
 for(var i=1;i<=4;i++){

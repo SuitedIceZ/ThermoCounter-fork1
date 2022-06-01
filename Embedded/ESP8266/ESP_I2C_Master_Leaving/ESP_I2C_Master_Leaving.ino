@@ -10,10 +10,10 @@ const char* password = "098765432";
 
 //GET Request variable
 int const ROOM_NUMBER = 402;
-//Your Domain name with URL path or IP address with path
-String serverName = "https://ThermoCounterBackend.suitedicez.repl.co";
+//Your Domain name with URL path or IP address with path without ending /
+String serverName = "http://192.168.43.106:8000";
 //Your Domain name without starting \https:// and ending /
-String host = "ThermoCounterBackend.suitedicez.repl.co";
+String host = "192.168.43.106:8000";
 
 
 //I2C variable
@@ -92,15 +92,15 @@ void loop() {
 
 String GET_request(String request,int room_number){
   if(WiFi.status()== WL_CONNECTED){
-      WiFiClientSecure client;
+        //WiFiClientSecure client;
         HTTPClient http;
-
-        const int httpPort = 443; // 80 is for HTTP / 443 is for HTTPS!
+        WiFiClient client;
+        /*const int httpPort = 443; // 80 is for HTTP / 443 is for HTTPS!
           client.setInsecure(); // this is the magical line that makes everything work
           if (!client.connect(host, httpPort)) { //works!
             Serial.println("connection failed");
             return "Connection failed" ;
-          }
+          }*/
     
       String serverPath = serverName + "/" + request + "?room=" + String(room_number);
       Serial.println("GET from server");

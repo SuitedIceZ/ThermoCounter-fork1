@@ -3671,11 +3671,11 @@ int main(void)
 
   //Input configuration
   int OneShot = 0;
-  int const Interval_Delay = 250;
+  int const Interval_Delay = 100;
 
   //I2C3 ESP8266 communicate
   char mode = '2';
-  int const REQUEST_DELAY = 5000;
+  int const REQUEST_DELAY = 10;
 
   //Sound PWM start.
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
@@ -3699,7 +3699,7 @@ int main(void)
 	  		  sprintf(buffer,"Found object\n\r");
 	  		  HAL_UART_Transmit(&huart2, &buffer, strlen(buffer), 1000);
 
-	  		  Speaker_Beep(1);
+	  		  //Speaker_Beep(1);
 
 	  	 	  //Send data to ESP8266 ask isFull , and adding
 	  		  HAL_I2C_Slave_Transmit(&hi2c3,&mode,sizeof(mode), 2000);

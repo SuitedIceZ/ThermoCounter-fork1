@@ -20,13 +20,13 @@ var add_button = document.getElementById("add_button");
 async function init(){ 
     let floors = ["floor1","floor2","floor3","floor4"];
     for(var i=0;i<4;i++){
-        var room_list = await db.collection((i+1).toString()).get();
+        let room_list = await db.collection((i+1).toString()).get();
         let floor = document.getElementById(floors[i]);
         console.log(i+1 + ' ' + room_list.lenght);
         for(const doc of room_list.docs){
-            var room_name = doc.data().room;
-            var room_capacity = doc.data().capacity;
-            var room_amount = doc.data().amount;
+            let room_name = doc.data().room;
+            let room_capacity = doc.data().capacity;
+            let room_amount = doc.data().amount;
             let h2 = document.createElement("h2");
             h2.innerHTML = room_name;
             let h3 = document.createElement("h3");
@@ -46,31 +46,56 @@ async function init(){
 init();
 
 //add room feature
-add_button.onclick = function(){
-    var select = document.getElementById('input_floor');
-    var value = select.options[select.selectedIndex].value;
-    var input_name = document.getElementById('input_name').value;
-    var input_capacity = document.getElementById('input_capacity').value;
-    console.log(input_name + ' ' + input_capacity);
-    db.collection(value.toString()).add({
-        amount: 0,
+add_button.onclick = async function(){
+    let select = document.getElementById('input_floor');
+    let input_floor = select.options[select.selectedIndex].value;
+    let input_name = document.getElementById('input_name').value;
+    let input_capacity = document.getElementById('input_capacity').value;
+    console.log("want to add: " + input_name + ' ' + input_capacity);
+    
+    let room_list = await db.collection(input_floor.toString()).get();
+    let isDocExist = false;
+    var room_doc;
+    var id;
+    for(const doc of room_list.docs){
+        if(doc.data().room == input_name){
+            room_doc = doc;    
+            id = doc.id;
+            isDocExist = true;
+        }
+    }
+    var amount_to_add = 0;
+    if (isDocExist) { //if exist - delete
+        amount_to_add = room_doc.data().amount;
+        console.log("Document data:", room_doc.data());
+        await db.collection(input_floor.toString()).doc(id).delete().then(() => {
+            console.log("Document successfully deleted!");
+        }).catch((error) => {
+            console.error("Error removing document: ", error);
+        });
+    }  
+    //create new room
+    await db.collection(input_floor.toString()).add({
+        amount: amount_to_add,
         room: input_name,
         capacity: input_capacity
     })
     .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
     })
-    .catch((error) => {
+     .catch((error) => {
         console.error("Error adding document: ", error);
     });
+    console.log("No such document!");
     window.location.reload();
 }
+
 
 //realtime data listener & updater
 for(var i=1;i<=4;i++){
     db.collection(i.toString()).onSnapshot((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            var cerrent_room = document.getElementById(doc.data().room);
+            let cerrent_room = document.getElementById(doc.data().room);
             if(doc.data().capacity > doc.data().amount) cerrent_room.className ="avilable";
                 else cerrent_room.className ="full";
             cerrent_room.innerHTML = doc.data().amount + '/' + doc.data().capacity;
@@ -78,3 +103,4 @@ for(var i=1;i<=4;i++){
         });
     });
 }
+
